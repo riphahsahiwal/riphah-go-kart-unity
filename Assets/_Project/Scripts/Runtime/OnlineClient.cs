@@ -63,7 +63,7 @@ namespace SmashKarts.Runtime
         private async Task Dial()
         {
             if (_closed) return;
-            OnStatus?.Invoke(string.IsNullOrEmpty(_token) ? "서버 연결 중…" : "재접속 중…");
+            OnStatus?.Invoke(string.IsNullOrEmpty(_token) ? "Connecting to server…" : "Reconnecting…");
             _cts = new CancellationTokenSource();
             _socket = new ClientWebSocket();
             try
@@ -72,7 +72,7 @@ namespace SmashKarts.Runtime
                 if (await Task.WhenAny(connectTask, Task.Delay(7000)) != connectTask)
                 {
                     _socket.Dispose();
-                    if (string.IsNullOrEmpty(_token)) { _closed = true; OnError?.Invoke("서버에 연결할 수 없습니다. 서버 실행 상태와 주소를 확인해 주세요."); }
+                    if (string.IsNullOrEmpty(_token)) { _closed = true; OnError?.Invoke("Could not connect to the server. Check that the server is running and the address is correct."); }
                     else await Reconnect();
                     return;
                 }
@@ -88,11 +88,11 @@ namespace SmashKarts.Runtime
             {
                 _closed = true;
                 OnError?.Invoke(string.IsNullOrEmpty(_token)
-                    ? "게임 서버에 연결하지 못했습니다. 서버 주소를 확인하거나 봇 연습을 시작하세요."
-                    : "연결이 끊겼습니다. 방 코드로 다시 입장할 수 있습니다.");
+                    ? "Could not connect to the game server. Check the server address or start a bot practice."
+                    : "Connection lost. You can rejoin with the room code.");
                 return;
             }
-            OnStatus?.Invoke("연결 끊김 · 재접속 중…");
+            OnStatus?.Invoke("Disconnected · Reconnecting…");
             await Task.Delay(Math.Min(2000, 400 * _attempts));
             await Dial();
         }
@@ -132,7 +132,7 @@ namespace SmashKarts.Runtime
                 _myId = (string)m["id"];
                 _attempts = 0;
                 OnJoined?.Invoke(_myId, (string)m["code"]);
-                OnStatus?.Invoke("온라인");
+                OnStatus?.Invoke("Online");
             }
             else if (type == "state")
             {

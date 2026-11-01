@@ -1,5 +1,5 @@
 // HUD + menus, ported from app/page.tsx for the vertical slice.
-// Korean copy is preserved from the source. Full lobby (name, colour,
+// All user-visible copy is in English (per user instruction Nov 2026; the source game was Korean). Full lobby (name, colour,
 // quick/create/join/practice, settings, help) is a Phase 7 task; this file
 // covers the in-game HUD, leaderboard, countdown/results, and Esc menu.
 using UnityEngine;
@@ -47,7 +47,7 @@ namespace SmashKarts.Runtime
             var mbg = _menuPanel.AddComponent<Image>(); mbg.color = new Color(0, 0, 0, 0.7f);
             var mrt = _menuPanel.GetComponent<RectTransform>();
             mrt.anchorMin = new Vector2(0.35f, 0.35f); mrt.anchorMax = new Vector2(0.65f, 0.65f); mrt.offsetMin = Vector2.zero; mrt.offsetMax = Vector2.zero;
-            MakeText(_menuPanel.transform, "MenuText", new Vector2(0.5f, 0.5f), Vector2.zero, 20).text = "메뉴\nEsc를 다시 눌러 계속\n(경기는 계속 진행됩니다)";
+            MakeText(_menuPanel.transform, "MenuText", new Vector2(0.5f, 0.5f), Vector2.zero, 20).text = "MENU\nPress Esc again to continue\n(The match keeps running)";
             _menuPanel.SetActive(false);
         }
 
@@ -68,7 +68,7 @@ namespace SmashKarts.Runtime
             if (snap == null) return;
             string phaseLabel = snap.Phase == "results" ? "NEXT ROUND" : snap.Phase == "countdown" ? "GET READY" : "TIME LEFT";
             _clock.text = $"{phaseLabel}\n{FormatTime(snap.Remaining)}";
-            _round.text = $"SUNSET CIRCUIT\n개인전 · ROUND {snap.Round}\n{(snap.Code == "PRACTICE" ? "BOT PRACTICE" : "ROOM " + snap.Code)}";
+            _round.text = $"SUNSET CIRCUIT\nFREE FOR ALL · ROUND {snap.Round}\n{(snap.Code == "PRACTICE" ? "BOT PRACTICE" : "ROOM " + snap.Code)}";
             if (snap.Phase == "countdown") _centre.text = "GET READY";
             else if (snap.Phase == "results") _centre.text = "NEXT ROUND";
             else _centre.text = "";
@@ -78,13 +78,13 @@ namespace SmashKarts.Runtime
                 if (me.Weapon != null)
                 {
                     var def = Weapons.Defs[me.Weapon.Value];
-                    _weapon.text = $"WEAPON READY\n{def.NameKo} ({def.NameEn})\n{def.Description}\n탄약: {me.Ammo}";
+                    _weapon.text = $"WEAPON READY\n{def.NameEn}\n{def.Description}\nAmmo: {me.Ammo}";
                 }
-                else _weapon.text = "FIND A WEAPON\n아이템 상자를 찾으세요\n? 상자에 닿으면 무기 획득";
+                else _weapon.text = "FIND A WEAPON\nFind a loot box\nTouch a ? box to get a weapon";
             }
 
             var ranked = snap.Players.OrderByDescending(p => p.Kills).ThenBy(p => p.Deaths).ToList();
-            var sb = new StringBuilder("드라이버\t킬\t사망\n");
+            var sb = new StringBuilder("Driver\tKills\tDeaths\n");
             foreach (var p in ranked) sb.AppendLine($"{p.Name}\t{p.Kills}\t{p.Deaths}");
             _leaderboard.text = sb.ToString();
 

@@ -1,5 +1,5 @@
 // Lobby, ported from app/page.tsx lobby screen (Phase 7, first pass).
-// Korean copy preserved. Buttons: quick / create / join-by-code are online
+// All user-visible copy is in English (per user instruction Nov 2026; the source game was Korean). Buttons: quick / create / join-by-code are online
 // actions — they call OnlineClient and show its status/error in the lobby;
 // practice starts the local match immediately. Help lists all 11 weapons.
 // Settings holds server URL + mute; values are kept in PlayerPrefs.
@@ -32,9 +32,9 @@ namespace SmashKarts.Runtime
             var bg = _panel.AddComponent<Image>(); bg.color = new Color(0.1f, 0.08f, 0.06f, 0.85f);
 
             MakeText(_panel.transform, "SMASH KARTS ARENA", new Vector2(0.5f, 0.95f), 36);
-            MakeText(_panel.transform, "ALL GAS. TOTAL CHAOS.\n작은 카트.\n거대한 한 방.\n무기를 줍고, 조준하고, 날려버리세요.\n3분 동안 펼쳐지는 카트 배틀 아레나.\n최대 8인 · 11가지 무기 · 03:00 데스매치", new Vector2(0.5f, 0.8f), 20);
+            MakeText(_panel.transform, "ALL GAS. TOTAL CHAOS.\nSmall karts.\nOne huge hit.\nPick up weapons, aim, and blast them away.\nA 3-minute kart battle arena.\nUp to 8 players · 11 weapons · 03:00 deathmatch", new Vector2(0.5f, 0.8f), 20);
 
-            _nameField = MakeInput(_panel.transform, "드라이버 이름", new Vector2(0.5f, 0.62f));
+            _nameField = MakeInput(_panel.transform, "Driver name", new Vector2(0.5f, 0.62f));
             _nameField.text = PlayerPrefs.GetString("driver_name", "Driver");
             _nameField.characterLimit = 16;
 
@@ -45,30 +45,30 @@ namespace SmashKarts.Runtime
                 var btn = MakeButton(_panel.transform, GameConstants.Colors[i], new Vector2(0.35f + i * 0.06f, 0.55f), () => _color = idx);
                 var img = btn.GetComponent<Image>(); img.color = Coord.Hex(GameConstants.Colors[i]);
             }
-            MakeButton(_panel.transform, "빠른 배틀", new Vector2(0.5f, 0.48f), () => StartOnline("quick"));
-            MakeButton(_panel.transform, "방 만들기", new Vector2(0.35f, 0.42f), () => StartOnline("create"));
-            MakeButton(_panel.transform, "혼자 연습하기", new Vector2(0.65f, 0.42f), StartPractice);
-            _codeField = MakeInput(_panel.transform, "6자리 방 코드", new Vector2(0.5f, 0.36f));
+            MakeButton(_panel.transform, "Quick Battle", new Vector2(0.5f, 0.48f), () => StartOnline("quick"));
+            MakeButton(_panel.transform, "Create Room", new Vector2(0.35f, 0.42f), () => StartOnline("create"));
+            MakeButton(_panel.transform, "Practice Alone", new Vector2(0.65f, 0.42f), StartPractice);
+            _codeField = MakeInput(_panel.transform, "6-character room code", new Vector2(0.5f, 0.36f));
             _codeField.characterLimit = 6;
-            MakeButton(_panel.transform, "코드로 입장", new Vector2(0.5f, 0.30f), () => StartOnline("join"));
-            _botsToggle = MakeToggle(_panel.transform, "빈자리 봇", new Vector2(0.5f, 0.25f), true);
-            MakeButton(_panel.transform, "게임 방법", new Vector2(0.35f, 0.18f), () => _helpPanel.SetActive(true));
-            MakeButton(_panel.transform, "게임 설정", new Vector2(0.65f, 0.18f), () => _settingsPanel.SetActive(true));
+            MakeButton(_panel.transform, "Join by Code", new Vector2(0.5f, 0.30f), () => StartOnline("join"));
+            _botsToggle = MakeToggle(_panel.transform, "Fill empty seats with bots", new Vector2(0.5f, 0.25f), true);
+            MakeButton(_panel.transform, "How to Play", new Vector2(0.35f, 0.18f), () => _helpPanel.SetActive(true));
+            MakeButton(_panel.transform, "Settings", new Vector2(0.65f, 0.18f), () => _settingsPanel.SetActive(true));
             _status = MakeText(_panel.transform, "", new Vector2(0.5f, 0.12f), 16);
-            MakeText(_panel.transform, "WASD / 방향키로 주행 · SPACE로 발사\n독립 제작 카트 배틀 · SMASH KARTS에서 영감을 받은 게임", new Vector2(0.5f, 0.06f), 14);
+            MakeText(_panel.transform, "Drive with WASD / arrow keys · SPACE to fire\nIndependently made kart battle · Inspired by SMASH KARTS", new Vector2(0.5f, 0.06f), 14);
 
             _helpPanel = MakePanel(canvas.transform, "Help");
-            var helpText = new StringBuilder("HOW TO PLAY\nW / ↑ 전진 · S / ↓ 후진 · A/D 좌우 · SPACE 발사 · Tab 리더보드 · Esc 메뉴\n\n");
-            foreach (var kv in Weapons.Defs) helpText.AppendLine($"{kv.Value.NameEn} — {kv.Value.NameKo}: {kv.Value.Description}");
+            var helpText = new StringBuilder("HOW TO PLAY\nW / Up = forward · S / Down = reverse · A/D = steer · SPACE = fire · Tab = leaderboard · Esc = menu\n\n");
+            foreach (var kv in Weapons.Defs) helpText.AppendLine($"{kv.Value.NameEn}: {kv.Value.Description}");
             MakeText(_helpPanel.transform, helpText.ToString(), new Vector2(0.5f, 0.5f), 14);
-            MakeButton(_helpPanel.transform, "닫기", new Vector2(0.5f, 0.05f), () => _helpPanel.SetActive(false));
+            MakeButton(_helpPanel.transform, "Close", new Vector2(0.5f, 0.05f), () => _helpPanel.SetActive(false));
             _helpPanel.SetActive(false);
 
             _settingsPanel = MakePanel(canvas.transform, "Settings");
             _serverField = MakeInput(_settingsPanel.transform, "ws://localhost:3001/ws", new Vector2(0.5f, 0.6f));
             _serverField.text = PlayerPrefs.GetString("server_url", "ws://localhost:3001/ws");
-            _muteToggle = MakeToggle(_settingsPanel.transform, "음소거", new Vector2(0.5f, 0.45f), PlayerPrefs.GetInt("muted", 0) == 1);
-            MakeButton(_settingsPanel.transform, "닫기", new Vector2(0.5f, 0.2f), () => { PlayerPrefs.SetString("server_url", _serverField.text); PlayerPrefs.SetInt("muted", _muteToggle.isOn ? 1 : 0); _settingsPanel.SetActive(false); });
+            _muteToggle = MakeToggle(_settingsPanel.transform, "Mute", new Vector2(0.5f, 0.45f), PlayerPrefs.GetInt("muted", 0) == 1);
+            MakeButton(_settingsPanel.transform, "Close", new Vector2(0.5f, 0.2f), () => { PlayerPrefs.SetString("server_url", _serverField.text); PlayerPrefs.SetInt("muted", _muteToggle.isOn ? 1 : 0); _settingsPanel.SetActive(false); });
             _settingsPanel.SetActive(false);
         }
 
@@ -85,7 +85,7 @@ namespace SmashKarts.Runtime
         private void StartOnline(string action)
         {
             PlayerPrefs.SetString("driver_name", _nameField.text);
-            _status.text = "서버 연결 중…";
+            _status.text = "Connecting to server…";
             _manager.StartOnline(action, _nameField.text, _color, _codeField.text, _botsToggle.isOn, _serverField != null ? _serverField.text : "ws://localhost:3001/ws");
         }
 
