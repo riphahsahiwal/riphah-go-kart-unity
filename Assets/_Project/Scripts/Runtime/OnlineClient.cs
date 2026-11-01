@@ -35,7 +35,7 @@ namespace SmashKarts.Runtime
         private int _color;
         private bool _bots, _closed;
         private int _attempts;
-        private Input _lastInput;
+        private SmashKarts.Core.Input _lastInput;
         private float _inputTimer, _pingTimer;
 
         private static readonly Dictionary<string, WeaponKind> WeaponByKey = new()
@@ -52,7 +52,7 @@ namespace SmashKarts.Runtime
             Endpoint = endpoint; _action = action; _name = name; _color = color; _code = code; _bots = bots;
         }
 
-        public void SetInput(Input input) => _lastInput = input;
+        public void SetInput(SmashKarts.Core.Input input) => _lastInput = input;
 
         public async void Connect()
         {
@@ -220,7 +220,7 @@ namespace SmashKarts.Runtime
                     FireHeld = D(pj["fireHeld"]), MachineClock = D(pj["machineClock"]), LastInput = D(pj["lastInput"]),
                 };
                 var inp = pj["input"];
-                if (inp != null) p.Input = new Input { Throttle = D(inp["throttle"]), Steer = D(inp["steer"]), Fire = (bool?)inp["fire"] ?? false };
+                if (inp != null) p.Input = new SmashKarts.Core.Input { Throttle = D(inp["throttle"]), Steer = D(inp["steer"]), Fire = (bool?)inp["fire"] ?? false };
                 snap.Players.Add(p);
             }
             foreach (var qj in s["projectiles"] ?? new JArray())
