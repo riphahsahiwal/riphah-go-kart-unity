@@ -64,7 +64,7 @@ namespace SmashKarts.Core
 
     public sealed class WeaponDef
     {
-        public string NameKo;
+        public string Name;
         public string NameEn;
         public string Icon;
         public int Ammo;
@@ -74,20 +74,20 @@ namespace SmashKarts.Core
 
     public static class Weapons
     {
-        // simulation.ts: WEAPONS — Korean names/descriptions preserved verbatim.
+        // simulation.ts: WEAPONS — names, ammo, colours and mechanics unchanged; descriptions translated to English (per user instruction Nov 2026).
         public static readonly Dictionary<WeaponKind, WeaponDef> Defs = new()
         {
-            [WeaponKind.Rockets] = new() { NameKo = "로켓", NameEn = "ROCKETS", Icon = "rocket", Ammo = 3, Color = "#ff8655", Description = "전방으로 직진하는 로켓 3발. 직격 50 피해와 작은 범위 폭발." },
-            [WeaponKind.Bullets] = new() { NameKo = "삼연발 탄환", NameEn = "BULLETS", Icon = "crosshair", Ammo = 9, Color = "#ffe36c", Description = "3발씩 9회 발사하는 직진 탄환. 총 27발, 발당 7 피해." },
-            [WeaponKind.Machinegun] = new() { NameKo = "기관총", NameEn = "MACHINE GUN", Icon = "scan", Ammo = 166, Color = "#d7fa52", Description = "가까운 상대를 자동 추적하며 6.5초 연속 사격. 한번 시작하면 멈출 수 없고, 멀어질수록 피해가 줄어듭니다." },
-            [WeaponKind.Cannon] = new() { NameKo = "곡사포", NameEn = "CANNONBALLS", Icon = "circle", Ammo = 4, Color = "#ffc494", Description = "포물선을 그리는 포탄 4발. 직격 시 즉시 처치. Space를 길게 누르면 다음 탄의 사거리가 늘어납니다." },
-            [WeaponKind.Mines] = new() { NameKo = "지뢰", NameEn = "MINES", Icon = "triangle", Ammo = 3, Color = "#ff7979", Description = "카트 뒤에 지뢰 3개를 설치. 상대가 밟으면 폭발하며 즉시 처치." },
-            [WeaponKind.Nuke] = new() { NameKo = "핵탄두", NameEn = "NUKE", Icon = "radiation", Ammo = 1, Color = "#ffb74a", Description = "전방으로 거대한 탄두를 발사. 직격과 넓은 폭발 범위로 다수의 상대를 공격." },
-            [WeaponKind.Lobgrenuke] = new() { NameKo = "폭탄", NameEn = "LOB-GRENUKE", Icon = "bomb", Ammo = 1, Color = "#fa907a", Description = "앞으로 던지는 근접 감지 폭탄. 상대가 접근하거나 4초가 지나면 폭발." },
-            [WeaponKind.Spiky] = new() { NameKo = "회전 철퇴", NameEn = "SPIKY-GO-ROUND", Icon = "orbit", Ammo = 1, Color = "#b9a5ff", Description = "6초 동안 철퇴 5개가 카트 주위를 회전. 닿은 상대를 즉시 처치하지만 공격을 막지는 못합니다." },
-            [WeaponKind.Star] = new() { NameKo = "무적", NameEn = "INVINCIBILITY", Icon = "star", Ammo = 1, Color = "#d7fa52", Description = "5초 동안 모든 피해를 막으며, 부딪힌 상대를 즉시 처치." },
-            [WeaponKind.Snow] = new() { NameKo = "눈덩이", NameEn = "SNOWBALL BLASTER", Icon = "snow", Ammo = 3, Color = "#91e9ff", Description = "눈덩이 3발. 맞은 상대를 3초 동안 얼리고, 얼어붙은 카트에 부딪히면 처치." },
-            [WeaponKind.Fake] = new() { NameKo = "가짜 상자", NameEn = "FAKE LOOT BOX", Icon = "box", Ammo = 1, Color = "#f58eff", Description = "아이템 상자처럼 보이는 함정. 상대가 접촉하면 즉시 처치." },
+            [WeaponKind.Rockets] = new() { Name = "Rocket", NameEn = "ROCKETS", Icon = "rocket", Ammo = 3, Color = "#ff8655", Description = "3 rockets fired straight ahead. A direct hit deals 50 damage, plus a small splash explosion." },
+            [WeaponKind.Bullets] = new() { Name = "Triple Shot", NameEn = "BULLETS", Icon = "crosshair", Ammo = 9, Color = "#ffe36c", Description = "Straight bullets in bursts of 3, fired 9 times. 27 shots in total, 7 damage each." },
+            [WeaponKind.Machinegun] = new() { Name = "Machine Gun", NameEn = "MACHINE GUN", Icon = "scan", Ammo = 166, Color = "#d7fa52", Description = "Auto-tracks a nearby opponent and fires continuously for 6.5 seconds. Once started it cannot be stopped, and damage falls off with distance." },
+            [WeaponKind.Cannon] = new() { Name = "Cannon", NameEn = "CANNONBALLS", Icon = "circle", Ammo = 4, Color = "#ffc494", Description = "4 arcing cannonballs. A direct hit instantly eliminates. Hold Space to increase the next shot's range." },
+            [WeaponKind.Mines] = new() { Name = "Mines", NameEn = "MINES", Icon = "triangle", Ammo = 3, Color = "#ff7979", Description = "Place 3 mines behind your kart. An opponent who drives over one explodes and is instantly eliminated." },
+            [WeaponKind.Nuke] = new() { Name = "Nuke", NameEn = "NUKE", Icon = "radiation", Ammo = 1, Color = "#ffb74a", Description = "Fire a huge warhead forward. A direct hit and wide blast radius attack multiple opponents." },
+            [WeaponKind.Lobgrenuke] = new() { Name = "Lob-Grenuke", NameEn = "LOB-GRENUKE", Icon = "bomb", Ammo = 1, Color = "#fa907a", Description = "Throw a proximity bomb forward. It explodes when an opponent approaches, or after 4 seconds." },
+            [WeaponKind.Spiky] = new() { Name = "Spiky-Go-Round", NameEn = "SPIKY-GO-ROUND", Icon = "orbit", Ammo = 1, Color = "#b9a5ff", Description = "5 spiked maces orbit your kart for 6 seconds. Touching an opponent instantly eliminates them, but does not block attacks." },
+            [WeaponKind.Star] = new() { Name = "Invincibility", NameEn = "INVINCIBILITY", Icon = "star", Ammo = 1, Color = "#d7fa52", Description = "Block all damage for 5 seconds, and instantly eliminate any opponent you bump into." },
+            [WeaponKind.Snow] = new() { Name = "Snowball Blaster", NameEn = "SNOWBALL BLASTER", Icon = "snow", Ammo = 3, Color = "#91e9ff", Description = "3 snowballs. A hit freezes an opponent for 3 seconds, and bumping a frozen kart eliminates it." },
+            [WeaponKind.Fake] = new() { Name = "Fake Loot Box", NameEn = "FAKE LOOT BOX", Icon = "box", Ammo = 1, Color = "#f58eff", Description = "A trap that looks like a loot box. An opponent who touches it is instantly eliminated." },
         };
 
         public static readonly WeaponKind[] Loot =
