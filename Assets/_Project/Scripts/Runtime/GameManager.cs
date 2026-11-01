@@ -151,7 +151,7 @@ namespace SmashKarts.Runtime
                 if (!_seenEvents.Add(e.Id)) continue;
                 _effects.OnEvent(e);
                 if (e.Kind == "shot") _audio.Shot(e.Weapon == WeaponKind.Cannon || e.Weapon == WeaponKind.Nuke);
-                else if (e.Kind == "explosion" || e.Kind == "smash") _audio.Explosion(e.Size / 5f);
+                else if (e.Kind == "explosion" || e.Kind == "smash") _audio.Explosion((float)e.Size / 5f);
                 else if (e.Kind == "pickup") _audio.Pickup();
                 if (e.Kind == "explosion" && me != null) _camera.Shake = Mathf.Max(_camera.Shake, (float)e.Size * 0.05f);
             }
