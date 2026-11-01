@@ -1,0 +1,17 @@
+{
+    "name": "SmashKarts.Tests.PlayMode",
+    "references": [
+        "SmashKarts.Core",
+        "SmashKarts.Runtime",
+        "UnityEngine.TestRunner"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
