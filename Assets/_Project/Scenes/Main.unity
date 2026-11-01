@@ -201,8 +201,3 @@ AudioListener:
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   serializedVersion: 2
---- !u!193 &500000
-SceneRoots:
-  m_ObjectHideFlags: 0
-  m_Roots:
-  - {fileID: 100000}
