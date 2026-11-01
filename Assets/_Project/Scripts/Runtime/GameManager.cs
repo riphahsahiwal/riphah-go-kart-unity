@@ -64,6 +64,11 @@ namespace SmashKarts.Runtime
             _online.Connect();
         }
 
+        // Test API (no gameplay change): PlayMode tests read the match
+        // state through these instead of private fields.
+        public bool HasPracticeRoom => _room != null;
+        public Snapshot GetCurrentSnapshot() => _room != null ? _room.Snapshot() : _onlineSnapshot;
+
         public void StartPractice(string name, int color)
         {
             PlayerName = name; PlayerColor = color;
