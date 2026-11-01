@@ -61,9 +61,9 @@ namespace SmashKarts.Runtime
             var pos = Coord.ToUnity(e.X, e.Y, e.Z);
             switch (e.Kind)
             {
-                case "shot": Burst(pos, e.Color, e.Size, 3); break;
-                case "explosion": Burst(pos, e.Color, e.Size, 20); Ring(pos, e.Color, e.Size); break;
-                case "hit": Burst(pos, e.Color, e.Size, 5); break;
+                case "shot": Burst(pos, e.Color, (float)e.Size, 3); break;
+                case "explosion": Burst(pos, e.Color, (float)e.Size, 20); Ring(pos, e.Color, (float)e.Size); break;
+                case "hit": Burst(pos, e.Color, (float)e.Size, 5); break;
                 case "smash": Burst(pos, e.Color, 5, 24); Ring(pos, "#fff3a0", 5); break;
                 case "pickup": Burst(pos, e.Color, 1, 8); break;
                 case "freeze": Burst(pos, "#a9f4ff", 2, 10); break;
