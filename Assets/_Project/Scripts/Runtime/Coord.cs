@@ -34,7 +34,17 @@ namespace SmashKarts.Runtime
 
         public static Material LitMaterial(string hex, float metallic = 0.05f, bool emissive = false)
         {
-            var shader = Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard");
+            // This project has no Scriptable Render Pipeline asset assigned
+            // (no GraphicsSettings / URP asset in the repo), so the player
+            // runs on the built-in render pipeline. A URP/Lit material under
+            // the built-in pipeline renders as Unity's bright-magenta error
+            // material in a player build — exactly what was seen on a local
+            // PC (tan sky, everything else magenta). So prefer the built-in
+            // Standard shader whenever no SRP asset is active, and only use
+            // URP/Lit when a pipeline asset is actually assigned.
+            var shader = UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline == null
+                ? Shader.Find("Standard") ?? Shader.Find("Universal Render Pipeline/Lit")
+                : Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard");
             var mat = new Material(shader);
             var col = Hex(hex);
             mat.SetColor("_BaseColor", col);
@@ -42,6 +52,7 @@ namespace SmashKarts.Runtime
             if (emissive) { mat.SetColor("_EmissionColor", col); mat.EnableKeyword("_EMISSION"); }
             mat.SetFloat("_Metallic", metallic);
             mat.SetFloat("_Smoothness", 0.6f);
+            mat.SetFloat("_Glossiness", 0.6f);
             return mat;
         }
 
