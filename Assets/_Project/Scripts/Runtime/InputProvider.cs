@@ -15,14 +15,14 @@ namespace SmashKarts.Runtime
         {
             if (TouchActive) return new SmashKarts.Core.Input { Throttle = TouchThrottle, Steer = TouchSteer, Fire = TouchFire };
             float throttle = 0, steer = 0;
-            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) throttle += 1;
-            if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) throttle -= 1;
-            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) steer += 1;
-            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) steer -= 1;
-            return new SmashKarts.Core.Input { Throttle = throttle, Steer = steer, Fire = Input.GetKey(KeyCode.Space) };
+            if (UnityEngine.Input.GetKey(KeyCode.W) || UnityEngine.Input.GetKey(KeyCode.UpArrow)) throttle += 1;
+            if (UnityEngine.Input.GetKey(KeyCode.S) || UnityEngine.Input.GetKey(KeyCode.DownArrow)) throttle -= 1;
+            if (UnityEngine.Input.GetKey(KeyCode.D) || UnityEngine.Input.GetKey(KeyCode.RightArrow)) steer += 1;
+            if (UnityEngine.Input.GetKey(KeyCode.A) || UnityEngine.Input.GetKey(KeyCode.LeftArrow)) steer -= 1;
+            return new SmashKarts.Core.Input { Throttle = throttle, Steer = steer, Fire = UnityEngine.Input.GetKey(KeyCode.Space) };
         }
 
-        public static bool MenuPressed => Input.GetKeyDown(KeyCode.Escape);
-        public static bool ScoreboardHeld => Input.GetKey(KeyCode.Tab);
+        public static bool MenuPressed => UnityEngine.Input.GetKeyDown(KeyCode.Escape);
+        public static bool ScoreboardHeld => UnityEngine.Input.GetKey(KeyCode.Tab);
     }
 }
