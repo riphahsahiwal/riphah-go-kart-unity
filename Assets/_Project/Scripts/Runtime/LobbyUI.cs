@@ -23,7 +23,7 @@ namespace SmashKarts.Runtime
         public void Build(GameManager manager, OnlineClient online)
         {
             _manager = manager; _online = online;
-            var canvas = FindFirstObjectByType<Canvas>();
+            var canvas = FindAnyObjectByType<Canvas>();
             if (canvas == null) { var go = new GameObject("Canvas"); canvas = go.AddComponent<Canvas>(); canvas.renderMode = RenderMode.ScreenSpaceOverlay; go.AddComponent<UnityEngine.UI.CanvasScaler>(); go.AddComponent<GraphicRaycaster>(); }
             _panel = new GameObject("Lobby");
             _panel.transform.SetParent(canvas.transform, false);

@@ -21,7 +21,7 @@ namespace SmashKarts.Runtime
 
         public void Build()
         {
-            if (FindFirstObjectByType<EventSystem>() == null) new GameObject("EventSystem").AddComponent<EventSystem>();
+            if (FindAnyObjectByType<EventSystem>() == null) new GameObject("EventSystem").AddComponent<EventSystem>();
             var canvasGo = new GameObject("Canvas");
             var canvas = canvasGo.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;

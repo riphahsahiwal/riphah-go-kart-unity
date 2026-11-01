@@ -11,7 +11,7 @@ namespace SmashKarts.Runtime
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void StartGame()
         {
-            if (Object.FindFirstObjectByType<GameManager>() != null) return;
+            if (Object.FindAnyObjectByType<GameManager>() != null) return;
             var go = new GameObject("Game");
             go.AddComponent<GameManager>();
         }
