@@ -6,10 +6,10 @@
         "UnityEngine.TestRunner",
         "UnityEngine.TestTools"
     ],
-    "includePlatforms": [],
-    "excludePlatforms": [
-        "WebGL"
+    "includePlatforms": [
+        "Editor"
     ],
+    "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
