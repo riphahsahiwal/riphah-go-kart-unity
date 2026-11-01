@@ -28,6 +28,7 @@ namespace SmashKarts.Core
 
         public static double Clamp(double n, double a, double b) => Math.Max(a, Math.Min(b, n));
         public static double AngleDiff(double a, double b) => Math.Atan2(Math.Sin(a - b), Math.Cos(a - b));
+        public static double Hypot(double x, double y) => Math.Sqrt(x * x + y * y);
 
         // simulation.ts: groundHeight
         public static double GroundHeight(double x, double z)
@@ -227,11 +228,12 @@ namespace SmashKarts.Core
         };
 
         private static readonly string[] BotNames = { "Bolt", "Miso", "Turbo", "Mochi", "Blaze", "Pixel", "Rocket" };
+        private static readonly Random FallbackRandom = new Random();
 
         public GameRoom(string code = "PRACTICE", Func<double> random = null)
         {
             Code = code;
-            Random = random ?? (() => System.Random.Shared.NextDouble());
+            Random = random ?? new Func<double>(FallbackRandom.NextDouble);
             for (int i = 0; i < BoxPositions.Length; i++)
                 Boxes.Add(new BoxState { Id = i, X = BoxPositions[i][0], Z = BoxPositions[i][1], Ready = 0 });
         }
@@ -274,11 +276,11 @@ namespace SmashKarts.Core
                 foreach (var q in Players)
                 {
                     if (q.Id != p.Id && q.Respawn <= 0)
-                        clear = Math.Min(clear, Math.Hypot(q.X - s[0], q.Z - s[1]));
+                        clear = Math.Min(clear, GameConstants.Hypot(q.X - s[0], q.Z - s[1]));
                 }
                 return (s, clear);
             }).OrderByDescending(c => c.clear).ToList();
-            var chosen = choices[(int)Math.Floor(Random() * Math.Min(3, choices.Count))].s;
+            var chosen = choices[(int)Math.Floor(Random() * (choices.Count < 3 ? choices.Count : 3))].s;
             p.X = chosen[0]; p.Z = chosen[1]; p.Y = 0; p.Angle = chosen[2];
             p.Speed = 0; p.Vy = 0; p.Hp = 100; p.Weapon = null; p.Ammo = 0;
             p.Active = 0; p.Shield = 2; p.Frozen = 0; p.Respawn = 0;
@@ -356,7 +358,7 @@ namespace SmashKarts.Core
 
         private bool LineClear(double ax, double ay, double az, double bx, double by, double bz)
         {
-            int n = (int)Math.Ceiling(Math.Hypot(bx - ax, bz - az) / 1);
+            int n = (int)Math.Ceiling(GameConstants.Hypot(bx - ax, bz - az) / 1);
             for (int i = 1; i < n; i++)
             {
                 double t = (double)i / n;
@@ -440,13 +442,13 @@ namespace SmashKarts.Core
             double tx, tz;
             if (p.Weapon == null)
             {
-                var box = Boxes.Where(b => b.Ready <= T).OrderBy(b => Math.Hypot(p.X - b.X, p.Z - b.Z)).FirstOrDefault();
+                var box = Boxes.Where(b => b.Ready <= T).OrderBy(b => GameConstants.Hypot(p.X - b.X, p.Z - b.Z)).FirstOrDefault();
                 if (box != null) { tx = box.X; tz = box.Z; }
                 else { tx = 0; tz = 25; }
             }
             else
             {
-                var e = enemies.OrderBy(q => Math.Hypot(p.X - q.X, p.Z - q.Z)).FirstOrDefault();
+                var e = enemies.OrderBy(q => GameConstants.Hypot(p.X - q.X, p.Z - q.Z)).FirstOrDefault();
                 if (e != null) { tx = e.X; tz = e.Z; }
                 else { tx = 0; tz = 25; }
             }
@@ -455,7 +457,7 @@ namespace SmashKarts.Core
             if (Blocked(p.X + Math.Sin(p.Angle) * look, p.Y, p.Z + Math.Cos(p.Angle) * look, 1.5))
                 desired = p.Angle + 1.6;
             double delta = GameConstants.AngleDiff(desired, p.Angle);
-            double dist = Math.Hypot(p.X - tx, p.Z - tz);
+            double dist = GameConstants.Hypot(p.X - tx, p.Z - tz);
             bool fire = p.Weapon != null && (
                 p.Weapon == WeaponKind.Mines || p.Weapon == WeaponKind.Fake ||
                 (dist < 27 && Math.Abs(delta) < 0.45) ||
@@ -522,13 +524,13 @@ namespace SmashKarts.Core
                         {
                             p.MachineClock += 6.5 / 166;
                             p.Ammo--;
-                            var targets = Players.Where(q => q.Id != p.Id && q.Respawn <= 0 && Math.Hypot(q.X - p.X, q.Z - p.Z) < 17 && LineClear(p.X, p.Y, p.Z, q.X, q.Y, q.Z))
-                                .OrderBy(q => Math.Hypot(q.X - p.X, q.Z - p.Z)).ToList();
+                            var targets = Players.Where(q => q.Id != p.Id && q.Respawn <= 0 && GameConstants.Hypot(q.X - p.X, q.Z - p.Z) < 17 && LineClear(p.X, p.Y, p.Z, q.X, q.Y, q.Z))
+                                .OrderBy(q => GameConstants.Hypot(q.X - p.X, q.Z - p.Z)).ToList();
                             var target = targets.FirstOrDefault();
                             double dx = Math.Sin(p.Angle), dz = Math.Cos(p.Angle);
                             Emit(new GameEvent { Kind = "shot", X = p.X + dx * 1.8, Y = p.Y + 1.3, Z = p.Z + dz * 1.8, Color = "#edff86", Size = 0.4, Owner = p.Id, Weapon = WeaponKind.Machinegun, Tx = target != null ? target.X : p.X + dx * 15, Ty = (target != null ? target.Y : p.Y) + 1, Tz = target != null ? target.Z : p.Z + dz * 15 });
                             if (target != null)
-                                Damage(target, 1.25 * GameConstants.Clamp(1 - Math.Hypot(target.X - p.X, target.Z - p.Z) / 22, 0.2, 1), p.Id, WeaponKind.Machinegun);
+                                Damage(target, 1.25 * GameConstants.Clamp(1 - GameConstants.Hypot(target.X - p.X, target.Z - p.Z) / 22, 0.2, 1), p.Id, WeaponKind.Machinegun);
                         }
                     }
                     if (p.Active == 0 || (p.Weapon == WeaponKind.Machinegun && p.Ammo == 0))
@@ -541,7 +543,7 @@ namespace SmashKarts.Core
 
                 if (p.Weapon == null)
                 {
-                    var b = Boxes.FirstOrDefault(box => box.Ready <= T && Math.Hypot(box.X - p.X, box.Z - p.Z) < 2 && Math.Abs(GameConstants.GroundHeight(box.X, box.Z) - p.Y) < 1.5);
+                    var b = Boxes.FirstOrDefault(box => box.Ready <= T && GameConstants.Hypot(box.X - p.X, box.Z - p.Z) < 2 && Math.Abs(GameConstants.GroundHeight(box.X, box.Z) - p.Y) < 1.5);
                     if (b != null)
                     {
                         b.Ready = T + 5;
@@ -558,7 +560,7 @@ namespace SmashKarts.Core
                 {
                     var a = alive[i]; var b = alive[j];
                     if (a.Respawn > 0 || b.Respawn > 0) continue;
-                    double dist = Math.Hypot(a.X - b.X, a.Z - b.Z);
+                    double dist = GameConstants.Hypot(a.X - b.X, a.Z - b.Z);
                     if (Math.Abs(a.Y - b.Y) > 2) continue;
                     if (dist < 4.4)
                     {
@@ -600,7 +602,7 @@ namespace SmashKarts.Core
                     continue;
                 }
                 if (lob && !q.Armed) q.Vy -= 18 * dt;
-                int steps = Math.Max(1, (int)Math.Ceiling(Math.Hypot(q.Vx * dt, q.Vz * dt) / 0.6));
+                int steps = Math.Max(1, (int)Math.Ceiling(GameConstants.Hypot(q.Vx * dt, q.Vz * dt) / 0.6));
                 bool alive = true;
                 for (int i = 0; i < steps && alive; i++)
                 {
