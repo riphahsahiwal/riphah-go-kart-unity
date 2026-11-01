@@ -1,0 +1,92 @@
+# Unity CI, Stage 2 of the online-only validation workflow (see the
+# unity-3d-game-engineering skill, ONLINE-ONLY section).
+# This workflow runs EditMode and PlayMode tests. PlayMode tests live in
+# Assets/_Project/Scripts/Tests/PlayMode and need no hand-authored scene:
+# the test runner provides an empty scene and the Runtime builds
+# procedurally. The WebGL build job is intentionally NOT enabled yet: the
+# project has no hand-authored Main.unity scene or EditorBuildSettings,
+# so a builder job would fail on missing scenes, not on code.
+#
+# Required repository secrets (Settings > Secrets and variables > Actions).
+# Never put these values in this file or in chat:
+#   UNITY_LICENSE   - base64 Unity license file (.ulf), one-time manual
+#                     activation per Unity version (GameCI docs).
+#   UNITY_EMAIL     - Unity account email, for activation.
+#   UNITY_PASSWORD  - Unity account password, for activation.
+# If any secret is missing, this job will fail at activation, not at test
+# compilation. That failure means "license not configured", not "code broken".
+#
+# Unity version: "auto" reads ProjectSettings/ProjectVersion.txt.
+# That file is currently a placeholder (6000.3.0f1, to confirm in the
+# Editor). If "auto" fails because that version does not exist, pin
+# unityVersion to the exact Unity 6 LTS patch installed in the Editor
+# and update ProjectVersion.txt to match.
+name: Unity CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  testEditMode:
+    name: EditMode tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-
+      - uses: game-ci/unity-test-runner@v4
+        id: tests
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: .
+          unityVersion: auto
+          testMode: editmode
+          artifactsPath: test-results/editmode
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          checkName: EditMode Test Results
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: EditMode Test Results
+          path: ${{ steps.tests.outputs.artifactsPath }}
+  testPlayMode:
+    name: PlayMode tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-
+      - uses: game-ci/unity-test-runner@v4
+        id: tests
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: .
+          unityVersion: auto
+          testMode: playmode
+          artifactsPath: test-results/playmode
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          checkName: PlayMode Test Results
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: PlayMode Test Results
+          path: ${{ steps.tests.outputs.artifactsPath }}
